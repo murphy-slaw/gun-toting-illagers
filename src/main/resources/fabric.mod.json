@@ -1,34 +1,33 @@
 {
 	"schemaVersion": 1,
-	"id": "template",
+	"id": "guntotingillagers",
 	"version": "${version}",
-	"name": "Template",
-	"description": "This is an example description! Tell everyone what your mod is about!",
+	"name": "Gun Toting Illagers",
+	"description": "Adds a new Illager type armed with a Musket Mod pistol",
 	"authors": [
-		"Me!"
+		"murphy_slaw"
 	],
 	"contact": {
-		"homepage": "https://fabricmc.net/",
-		"sources": "https://github.com/FabricMC/fabric-example-mod"
+		"sources": "https://github.com/murphy-slaw/gun-toting-illagers",
+		"issues": "https://github.com/murphy-slaw/gun-toting-illagers/issues"
 	},
-	"license": "CC0-1.0",
+	"license": "MIT",
 	"icon": "assets/template/icon.png",
 	"environment": "*",
 	"entrypoints": {
 		"main": [
-			"net.funkpla.template.Template"
+			"net.funkpla.guntotingillagers.GunTotingIllagersMod"
 		],
 		"client": [
-			"net.funkpla.template.TemplateClient"
+			"net.funkpla.guntotingillagers.GunTotingIllagersClient"
 		],
 		"fabric-datagen": [
-			"net.funkpla.template.TemplateDataGenerator"
 		]
 	},
 	"mixins": [
 		"template.mixins.json",
 		{
-			"config": "template.client.mixins.json",
+			"config": "guntotingillagers.client.mixins.json",
 			"environment": "client"
 		}
 	],

@@ -49,6 +49,9 @@ repositories {
 			includeGroup "maven.modrinth"
 		}
 	}
+	maven {
+		url "https://cursemaven.com"
+	}
 }
 
 loom {
@@ -75,6 +78,7 @@ dependencies {
 
 	// Fabric API. This is technically optional, but you probably want it anyway.
 	modImplementation "net.fabricmc.fabric-api:fabric-api:${project.fabric_version}"
+	modImplementation "curse.maven:ewewukeks-musket-mod-354562:5593028"
 	modApi ("me.shedaniel.cloth:cloth-config-fabric:${project.cloth_config_version}") {
 		exclude(group: "net.fabricmc.fabric-api")
 	}
@@ -120,7 +124,7 @@ publishing {
 
 	modrinth {
 		token = System.getenv("MODRINTH_TOKEN") // Remember to have the MODRINTH_TOKEN environment variable set or else this will fail - just make sure it stays private!
-		projectId = "template" // This can be the project ID or the slug. Either will work!
+		projectId = "guntotingillagers" // This can be the project ID or the slug. Either will work!
 		versionType = "release" // This is the default -- can also be `beta` or `alpha`
 		uploadFile = remapJar // With Loom, this MUST be set to `remapJar` instead of `jar`!
 		gameVersions = ["${project.minecraft_version}"] // Must be an array, even with only one version
