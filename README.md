@@ -1,8 +1,6 @@
-# Template Mod
+# Gun-Toting Illagers
 
-Description goes here.
+Adds a new Illager, the Musketeer, who is armed with a pistol from Musket Mod.
 
 ## Features
-## Acknowledgements
-### Sounds
-### Graphics
+* Maniacs with guns
