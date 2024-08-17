@@ -42,7 +42,6 @@ public class Musketeer extends Pillager implements PistolAttackMob {
     protected void registerGoals() {
         super.registerGoals();
         this.goalSelector.removeGoal(new RangedCrossbowAttackGoal<Pillager>(this, 1.0, 8.0f));
-        this.goalSelector.removeGoal(new Raider.HoldGroundAttackGoal(this, 10.0f));
         this.goalSelector.addGoal(2, new AvoidEntityGoal<>(this, Raider.class, 4.0f, 1.0, 1.2));
         this.goalSelector.addGoal(2, new AvoidEntityGoal<>(this, Player.class, 4.0f, 1.0, 1.2));
         this.goalSelector.addGoal(2, new AvoidEntityGoal<>(this, IronGolem.class, 4.0f, 1.0, 1.2));
