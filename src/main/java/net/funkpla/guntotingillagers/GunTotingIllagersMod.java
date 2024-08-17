@@ -7,6 +7,7 @@ import net.fabricmc.fabric.api.object.builder.v1.entity.FabricEntityTypeBuilder;
 import net.minecraft.core.Registry;
 import net.minecraft.core.registries.BuiltInRegistries;
 import net.minecraft.resources.ResourceLocation;
+import net.minecraft.world.entity.EntityDimensions;
 import net.minecraft.world.entity.EntityType;
 import net.minecraft.world.entity.MobCategory;
 import org.slf4j.Logger;
@@ -23,7 +24,7 @@ public class GunTotingIllagersMod implements ModInitializer {
 	public static final EntityType<Musketeer> MUSKETEER = Registry.register(
 			BuiltInRegistries.ENTITY_TYPE,
 			GunTotingIllagersMod.locate("musketeer"),
-			FabricEntityTypeBuilder.create(MobCategory.MONSTER, Musketeer::new).build()
+			FabricEntityTypeBuilder.create(MobCategory.MONSTER, Musketeer::new).dimensions(EntityDimensions.fixed(0.6f,1.94f)).build()
 	);
 
 	@Override
