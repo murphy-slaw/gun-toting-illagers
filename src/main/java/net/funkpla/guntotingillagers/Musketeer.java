@@ -95,10 +95,22 @@ public class Musketeer extends Pillager implements PistolAttackMob {
         return this.getItemInHand(interactionHand);
     }
 
+    public double getInaccuracyScalar(){
+        return this.random.triangle(0.0,0.0172275) * getInaccuracy();
+    }
+
+    public Vec3 getInaccuracyVector(){
+        return new Vec3(getInaccuracyScalar(), getInaccuracyScalar(), getInaccuracyScalar());
+    }
+
+    public int getInaccuracy(){
+        return 10 - this.level().getDifficulty().getId() * 3;
+    }
+
     public void performPistolAttack() {
         if (isHolding(Items.PISTOL)) {
             GunItem gun = (GunItem) getPistol().getItem();
-            gun.fire(this, this.getTargetVector());
+            gun.fire(this, this.getTargetVector().add(getInaccuracyVector()));
             playSound(gun.fireSound(), 3.5F, 1.0F);
         }
     }

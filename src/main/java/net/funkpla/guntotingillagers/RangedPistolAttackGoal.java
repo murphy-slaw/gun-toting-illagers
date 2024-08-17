@@ -13,12 +13,14 @@ import net.minecraft.world.entity.monster.Monster;
 import net.minecraft.world.entity.projectile.ProjectileUtil;
 import ewewukek.musketmod.Items;
 import net.minecraft.world.item.ItemStack;
+import net.minecraft.world.phys.AABB;
+import net.minecraft.world.phys.HitResult;
 
 public class RangedPistolAttackGoal<T extends Monster & PistolAttackMob>
         extends Goal {
     public static final UniformInt PATHFINDING_DELAY_RANGE = TimeUtil.rangeOfSeconds(1, 2);
     private final T mob;
-    private PistolState pistolState = PistolState.UNCHARGED;
+    private PistolState pistolState = PistolState.UNLOADED;
     private final double speedModifier;
     private final float attackRadiusSqr;
     private int seeTime;
@@ -74,6 +76,7 @@ public class RangedPistolAttackGoal<T extends Monster & PistolAttackMob>
         if (target == null) {
             return;
         }
+        this.mob.getLookControl().setLookAt(target, 10.0f, 30.0f);
         boolean canSee = this.mob.getSensing().hasLineOfSight(target);
         boolean hasSeen = this.seeTime > 0;
         if (canSee != hasSeen) {
@@ -92,47 +95,50 @@ public class RangedPistolAttackGoal<T extends Monster & PistolAttackMob>
             this.updatePathDelay = 0;
             this.mob.getNavigation().stop();
         }
-        this.mob.getLookControl().setLookAt(target, 30.0f, 30.0f);
         InteractionHand gunHand = ProjectileUtil.getWeaponHoldingHand(this.mob,Items.PISTOL);
         ItemStack gunStack = this.mob.getItemInHand(gunHand);
-        if (this.pistolState == PistolState.UNCHARGED){
+        if (this.pistolState == PistolState.UNLOADED){
             if (!notReady) {
                 this.mob.startUsingItem(gunHand);
-                this.pistolState = PistolState.CHARGING;
+                this.pistolState = PistolState.LOADING;
                 ((CrossbowAttackMob)this.mob).setChargingCrossbow(true);
             }
-        } else if (this.pistolState == PistolState.CHARGING){
+        } else if (this.pistolState == PistolState.LOADING){
             if (!this.mob.isUsingItem()) {
                 ((CrossbowAttackMob)this.mob).setChargingCrossbow(false);
-                this.pistolState = PistolState.UNCHARGED;
+                this.pistolState = PistolState.UNLOADED;
             }
             if (GunItem.isLoaded(gunStack)){
                 this.mob.releaseUsingItem();
                 this.mob.playSound(Sounds.MUSKET_READY);
-                this.pistolState = PistolState.CHARGED;
+                this.pistolState = PistolState.LOADED;
                 ((CrossbowAttackMob)this.mob).setChargingCrossbow(false);
                 this.attackDelay = 20 + this.mob.getRandom().nextInt(20);
             }
-        } else if (this.pistolState == PistolState.CHARGED){
+        } else if (this.pistolState == PistolState.LOADED){
             --this.attackDelay;
             if (this.attackDelay == 0) {
                 this.pistolState = PistolState.READY_TO_ATTACK;
             }
         } else if (this.pistolState == PistolState.READY_TO_ATTACK && canSee) {
-            this.mob.performRangedAttack(target, 1.0f);
-            this.pistolState = PistolState.UNCHARGED;
-            GunItem.setLoaded(gunStack,false);
+            AABB aABB = target.getBoundingBox().expandTowards(this.mob.position());
+            HitResult hit = ProjectileUtil.getEntityHitResult(this.mob,this.mob.position(),target.position(),aABB, entity -> (!entity.isAlliedTo(this.mob)),32.0);
+            if (hit == null) {
+                this.mob.performRangedAttack(target, 1.0f);
+                this.pistolState = PistolState.UNLOADED;
+                GunItem.setLoaded(gunStack, false);
+            }
         }
     }
 
     private boolean canRun() {
-        return this.pistolState == PistolState.UNCHARGED;
+        return this.pistolState == PistolState.UNLOADED;
     }
 
     enum PistolState {
-        UNCHARGED,
-        CHARGING,
-        CHARGED,
+        UNLOADED,
+        LOADING,
+        LOADED,
         READY_TO_ATTACK
     }
 }
